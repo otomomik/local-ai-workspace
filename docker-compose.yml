@@ -20,6 +20,7 @@ services:
     working_dir: /home/api
     volumes:
       - ./api/:/home/api
+      - /var/run/docker.sock:/var/run/docker.sock
       - api_node_modules_volume:/home/api/node_modules
     command: bash -c "npm install && npm run dev"
 
