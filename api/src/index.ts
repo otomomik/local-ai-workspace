@@ -1,5 +1,7 @@
 import { serve } from '@hono/node-server'
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
+import { swaggerUI } from '@hono/swagger-ui'
+
 
 const app = new OpenAPIHono()
 
@@ -31,8 +33,14 @@ app.openapi(
 
   }
 )
-app.get('/', (c) => {
-  return c.text('Hello Hono!')
+
+app.get('/docs', swaggerUI({ url: '/doc' }))
+app.doc('/doc', {
+  info: {
+    title: 'Local AI Workspace API',
+    version: 'v1'
+  },
+  openapi: '3.1.0'
 })
 
 serve({
