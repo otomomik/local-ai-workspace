@@ -3,13 +3,14 @@ import { serve } from '@hono/node-server'
 import { OpenAPIHono } from "@hono/zod-openapi"
 import { swaggerUI } from '@hono/swagger-ui'
 import { modelRouter } from "./routes/model.js"
+import { promptRouter } from "./routes/prompt.js"
 
 
 const app = new OpenAPIHono()
 
 app.use(cors())
 
-const router = app.route('/models', modelRouter)
+const router = app.route('/models', modelRouter).route("/prompts", promptRouter)
 export type AppType = typeof router
 
 app.get('/docs', swaggerUI({ url: '/doc' }))

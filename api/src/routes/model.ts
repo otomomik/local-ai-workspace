@@ -19,6 +19,6 @@ export const modelRouter = new OpenAPIHono().openapi(
   }),
   async c => {
     const models = await getModels()
-    return c.json(models)
+    return c.json(models, 200)
   }
 )
