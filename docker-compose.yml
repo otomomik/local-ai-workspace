@@ -7,6 +7,7 @@ services:
       - 5173:5173
     working_dir: /home/web
     volumes:
+      - ./api/:/home/api
       - ./web/:/home/web
       - web_node_modules_volume:/home/web/node_modules
     command: bash -c "npm install && npm run dev"
