@@ -1,38 +1,12 @@
 import { serve } from '@hono/node-server'
-import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
+import { OpenAPIHono } from "@hono/zod-openapi"
 import { swaggerUI } from '@hono/swagger-ui'
+import { modelRouter } from "./routes/model.js"
 
 
 const app = new OpenAPIHono()
 
-app.openapi(
-  createRoute({
-    method: 'get',
-    path: '/',
-    responses: {
-      200: {
-        description: 'Hello Hono!',
-        content: {
-          'application/json': {
-            schema: z.object({
-              type: z.string(),
-              example: z.string()
-            })
-          }
-        }
-      }
-    }
-  }),
-  c => {
-    return c.json(
-      {
-        type: 'string',
-        example: 'Hello Hono!'
-      },
-    )
-
-  }
-)
+app.route('/models', modelRouter)
 
 app.get('/docs', swaggerUI({ url: '/doc' }))
 app.doc('/doc', {
