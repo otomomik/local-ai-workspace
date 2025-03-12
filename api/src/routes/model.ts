@@ -2,9 +2,7 @@ import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
 import { getModels } from "../services/mlx.js"
 import { modelSchema } from "../schemas/mlx.js"
 
-export const modelRouter = new OpenAPIHono()
-
-modelRouter.openapi(
+export const modelRouter = new OpenAPIHono().openapi(
   createRoute({
     method: 'get',
     path: '/',
