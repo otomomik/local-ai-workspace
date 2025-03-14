@@ -8,10 +8,6 @@
 .idea/usage.statistics.xml
 .idea/shelf
 
-# deps
-node_modules/*
-!node_modules/.gitkeep
-
 # env
 .env
 .env.production

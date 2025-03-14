@@ -1,0 +1,16 @@
+{
+  "name": "local-ai-workspace",
+  "private": true,
+  "workspaces": [
+    "web",
+    "api",
+    "mlx"
+  ],
+  "scripts": {
+    "dev": "turbo dev"
+  },
+  "devDependencies": {
+    "turbo": "^2.4.4"
+  },
+  "packageManager": "npm@10.9.2"
+}

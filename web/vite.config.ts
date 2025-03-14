@@ -4,8 +4,5 @@ import generouted from '@generouted/react-router/plugin'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), generouted()],
-  server: {
-    host: true
-  }
+  plugins: [react(), generouted()]
 })
