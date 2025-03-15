@@ -2,7 +2,7 @@ import { OpenAI } from "openai"
 import type { ChatCompletionsRequest, Model } from "../schemas/mlx.js"
 
 const client = new OpenAI({
-  baseURL: "http://localhost:10240/v1",
+  baseURL: "http://localhost:10004/v1",
   apiKey: ""
 })
 
