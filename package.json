@@ -4,7 +4,8 @@
   "workspaces": [
     "web",
     "api",
-    "mlx"
+    "mlx",
+    "postgres"
   ],
   "scripts": {
     "dev": "turbo dev"
