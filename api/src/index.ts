@@ -24,7 +24,7 @@ app.doc('/doc', {
 
 serve({
   fetch: app.fetch,
-  port: 10002
+  port: Number(process.env.API_PORT)
 }, (info) => {
   console.log(`Server is running on http://localhost:${info.port}`)
 })
