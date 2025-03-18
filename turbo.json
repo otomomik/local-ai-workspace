@@ -1,11 +1,28 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalEnv": [
+    "WEB_PORT",
+    "API_PORT",
+    "MLX_PORT",
+    "POSTGRES_HOST",
+    "POSTGRES_PORT",
+    "POSTGRES_USER",
+    "POSTGRES_PASSWORD",
+    "POSTGRES_DB",
+    "PGDATA",
+    "POSTGRES_URL"
+  ],
   "tasks": {
     "build": {
       "outputs": ["dist/**"]
     },
     "dev": {
       "persistent": true,
+      "cache": false
+    },
+    "db:generate": {},
+    "db:migrate": {},
+    "clean": {
       "cache": false
     }
   }

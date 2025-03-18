@@ -6,6 +6,6 @@ import generouted from '@generouted/react-router/plugin'
 export default defineConfig({
   plugins: [react(), generouted()],
   server: {
-    port: 10001
+    port: Number(process.env.WEB_PORT),
   }
 })
