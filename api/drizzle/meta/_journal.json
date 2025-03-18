@@ -8,6 +8,13 @@
       "when": 1742264543105,
       "tag": "0000_magenta_dreaming_celestial",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1742269004926,
+      "tag": "0001_optimal_whirlwind",
+      "breakpoints": true
     }
   ]
 }
