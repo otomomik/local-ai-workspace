@@ -1,7 +1,7 @@
 {
   "name": "postgres",
   "scripts": {
-    "install": "docker build -t local_ai_workspace .",
-    "dev": "docker rm -f local_ai_workspace && docker run -p 10003:5432 -v ./data:/var/lib/postgresql/data --env-file ../.env --name local_ai_workspace local_ai_workspace"
+    "dev": "sh ./dev.sh",
+    "clean": "sh ./clean.sh"
   }
 }
