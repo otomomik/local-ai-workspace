@@ -1,20 +1,7 @@
-import { z } from "zod";
+import { createInsertSchema, createSelectSchema, createUpdateSchema } from "drizzle-zod";
+import { projectsTable } from "../db.js";
+import { omitTimestamp } from "./util.js";
 
-const id = z.number()
-const name = z.string()
-const absolutePath = z.string()
-
-export const selectProjectSchema = z.object({
-  id,
-  name,
-  absolutePath,
-  createdAt: z.string(),
-  updatedAt: z.string(),
-})
-
-export const createProjectSchema = z.object({
-  name,
-  absolutePath,
-})
-
-export const updateProjectSchema = createProjectSchema
+export const selectProjectSchema = createSelectSchema(projectsTable)
+export const createProjectSchema = createInsertSchema(projectsTable).omit(omitTimestamp)
+export const updateProjectSchema = createUpdateSchema(projectsTable).omit(omitTimestamp)

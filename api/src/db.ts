@@ -1,7 +1,7 @@
 import { sql } from "drizzle-orm";
 import { integer, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
-const timestamps = (deletedAt: boolean = false) => ({
+const timestamps = {
   createdAt: timestamp("created_at", {
     withTimezone: true,
     mode: "string",
@@ -12,17 +12,19 @@ const timestamps = (deletedAt: boolean = false) => ({
     .default(sql`(now() AT TIME ZONE 'utc'::text)`)
     .notNull()
     .$onUpdate(() => sql`(now() AT TIME ZONE 'utc'::text)`),
-  ...(deletedAt ? {
-    deletedAt: timestamp("deleted_at", {
-      withTimezone: true,
-      mode: "string",
-    }),
-  } : {})
-});
+};
+
+const timestampsWithDeletedAt = {
+  ...timestamps,
+  deletedAt: timestamp("deleted_at", {
+    withTimezone: true,
+    mode: "string",
+  }),
+};
 
 export const projectsTable = pgTable("projects", {
   id: integer("id").generatedAlwaysAsIdentity().primaryKey(),
   name: text("name").notNull(),
   absolutePath: text("absolute_path").notNull(),
-  ...timestamps()
+  ...timestamps,
 })

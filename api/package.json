@@ -12,6 +12,7 @@
     "@hono/swagger-ui": "^0.5.1",
     "@hono/zod-openapi": "^0.19.2",
     "drizzle-orm": "0.39.0",
+    "drizzle-zod": "^0.7.0",
     "hono": "^4.7.4",
     "openai": "^4.87.3",
     "pg": "^8.14.0",

@@ -1,5 +1,6 @@
 import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
-import { createProjectSchema } from "../schemas/project.js";
+import { selectProjectSchema } from "../schemas/project.js";
+import { getProjects } from "../services/project.js";
 
 export const projectRoute = new OpenAPIHono().openapi(
   createRoute({
@@ -10,14 +11,14 @@ export const projectRoute = new OpenAPIHono().openapi(
         description: 'get projects',
         content: {
           'application/json': {
-            schema: createProjectSchema.array()
+            schema: selectProjectSchema.array()
           }
         }
-
       }
     }
   }),
-  c => {
-    return c.json([])
+  async c => {
+    const projects = await getProjects()
+    return c.json(projects)
   }
 )
