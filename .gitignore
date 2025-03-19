@@ -1,5 +1,6 @@
-workspace/*
-!workspace/.gitkeep
 .turbo
 node_modules
 .DS_Store
+*.log*
+.venv
+postgres/data
