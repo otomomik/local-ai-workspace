@@ -1,1 +1,4 @@
-mlx-omni-server==0.3.3
+fastapi[standard]==0.115.11
+huggingface_hub[cli]==0.29.3
+mlx-lm==0.22.1
+mlx-vlm==0.1.19

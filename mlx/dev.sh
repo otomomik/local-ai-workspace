@@ -12,4 +12,4 @@ if "${IS_EXIST_VENV}"; then
   pip install -r requirements.txt
 fi
 
-mlx-omni-server --port "$MLX_PORT"
+fastapi dev main.py --port "$MLX_PORT"
