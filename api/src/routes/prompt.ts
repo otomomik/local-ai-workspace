@@ -1,6 +1,6 @@
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
 import { promptRequest, promptResponse } from "../schemas/mlx.js"
-import { streamText } from "hono/streaming"
+import { stream } from "hono/streaming"
 import { postChatCompletions, postChatCompletionsWithSSE } from "../services/mlx.js"
 
 export const promptRouter = new OpenAPIHono().openapi(
@@ -60,12 +60,12 @@ export const promptRouter = new OpenAPIHono().openapi(
   }),
   c => {
     const request = c.req.valid("json")
-    return streamText(c, async stream => {
+    return stream(c, async stream => {
       const generating = await postChatCompletionsWithSSE(request)
 
       for await (const chunk of generating) {
         if (chunk.choices[0].delta.content) {
-          stream.write(chunk.choices[0].delta.content)
+          stream.writeln(`data: ${JSON.stringify(chunk)}`)
         }
       }
 

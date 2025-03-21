@@ -1,9 +1,10 @@
+import { InferRequestType } from "hono"
 import { useHono } from "./useHono.ts"
 
 export const usePrompts = () => {
   const hono = useHono()
 
-  const postPrompts = async (request: Parameters<typeof hono.prompts.$post>[0]["json"]) => {
+  const postPrompts = async (request: InferRequestType<typeof hono.prompts.$post>["json"]) => {
     const res = await hono.prompts.$post({
       json: request
     })
@@ -14,7 +15,13 @@ export const usePrompts = () => {
     return await res.json()
   }
 
-  const postPromptsWithSSE = async (request: Parameters<typeof hono.prompts.sse.$post>[0]["json"], callback: (chunk: any) => boolean) => {
+  const postPromptsWithSSE = async (request: InferRequestType<typeof hono.prompts.sse.$post>["json"], callback: (chunk: {
+    choices: {
+      delta: {
+        content: string
+      }
+    }[]
+  }) => boolean) => {
     const res = await hono.prompts.sse.$post({
       json: request
     })
@@ -35,8 +42,9 @@ export const usePrompts = () => {
         break;
       }
 
-      const decoded = decoder.decode(value)
-      const stop = callback(decoded)
+      const decoded = decoder.decode(value).split("data: ")[1]
+      const json = JSON.parse(decoded)
+      const stop = callback(json)
       if (stop) {
         break
       }

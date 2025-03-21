@@ -31,7 +31,8 @@ const Prompts: FC = () => {
           messages: cloneMessages
         },
         (chunk) => {
-          setAnswer(prev => prev + chunk)
+          const content = chunk.choices[0].delta.content
+          setAnswer(prev => prev + content)
           return false
         }
       )
