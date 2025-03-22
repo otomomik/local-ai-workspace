@@ -1,6 +1,6 @@
 import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
-import { selectAgentSchema } from "../schemas/agent.js";
-import { getAgents } from "../services/agent.js";
+import { requestParamsAgentSchema, selectAgentSchema } from "../schemas/agent.js";
+import { getAgentById, getAgents } from "../services/agent.js";
 
 const tags = ["agent"]
 
@@ -24,4 +24,26 @@ export const agentRoute = new OpenAPIHono().openapi(
     const agents = await getAgents()
     return c.json(agents)
   }
-)
+).openapi(
+  createRoute({
+    method: 'get',
+    path: '/{agentId}',
+    tags,
+    request: {
+      params: requestParamsAgentSchema
+    },
+    responses: {
+      200: {
+        description: 'get agent by id',
+        content: {
+          "application/json": {
+            schema: selectAgentSchema
+          }
+        }
+      }
+    }
+  }), async c => {
+    const { agentId } = c.req.valid("param")
+    const agent = await getAgentById(agentId)
+    return c.json(agent)
+  })
