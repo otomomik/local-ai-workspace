@@ -28,3 +28,18 @@ export const createAgent = async (value: CreateAgent) => {
   return agent
 
 }
+
+export const extractFirstXMLElement = (input: string) => {
+  const regex = /<([a-zA-Z_][\w-]*)\b[^>]*>[\s\S]*?<\/\1>/;
+  const match = input.match(regex);
+  return match ? match[0] : "";
+}
+
+const taskEnd = () => {
+  console.log("taskEnd")
+  return ""
+}
+
+export const task: Record<string, (...props: any) => string> = {
+  taskEnd
+} as const

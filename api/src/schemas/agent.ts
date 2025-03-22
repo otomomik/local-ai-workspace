@@ -2,6 +2,7 @@ import { createInsertSchema, createSelectSchema, createUpdateSchema } from "driz
 import { agentsTable } from "../db.js";
 import { omitTimestamp } from "./util.js";
 import { z } from "zod";
+import { modelId } from "./mlx.js";
 
 export const selectAgentSchema = createSelectSchema(agentsTable)
 export type Agent = z.infer<typeof selectAgentSchema>
@@ -12,4 +13,8 @@ export const requestParamsAgentSchema = z.object({
   agentId: z.string().refine(v => !Number.isNaN(Number(v)), {
     message: "agentId must be a number",
   }).transform(v => Number(v)),
+})
+export const runAgentSchema = z.object({
+  model: modelId,
+  message: z.string()
 })

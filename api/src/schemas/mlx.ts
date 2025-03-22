@@ -1,6 +1,6 @@
 import { z } from "@hono/zod-openapi"
 
-const modelId = z.string()
+export const modelId = z.string()
 export const modelSchema = z.object({
   id: modelId,
 })
