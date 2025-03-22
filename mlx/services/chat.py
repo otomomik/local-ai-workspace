@@ -27,18 +27,18 @@ class ChatService:
         self.using_model = using_model
 
     def generate(self):
-        if self.using_model.image_to_text or self.using_model.video_to_text:
-            raise HTTPException(
-                status_code=400, detail=f"Model {self.request.model} not supported."
-            )
+        # if self.using_model.image_to_text or self.using_model.video_to_text:
+        #     raise HTTPException(
+        #         status_code=400, detail=f"Model {self.request.model} not supported."
+        #     )
 
         return self._text_generate()
 
     def generate_stream(self):
-        if self.using_model.image_to_text or self.using_model.video_to_text:
-            raise HTTPException(
-                status_code=400, detail=f"Model {self.request.model} not supported."
-            )
+        # if self.using_model.image_to_text or self.using_model.video_to_text:
+        #     raise HTTPException(
+        #         status_code=400, detail=f"Model {self.request.model} not supported."
+        #     )
 
         return self._text_generate_stream()
 
@@ -51,25 +51,38 @@ class ChatService:
     def _response(
         self, generated_text: Union[str, None], finish_reason: Union[str, None]
     ):
+        object = "chat.completion.chunk" if self.request.stream else "chat.completion"
+        usage = (
+            {}
+            if self.request.stream
+            else {
+                "usage": {
+                    "completion_tokens": 0,
+                    "prompt_tokens": 0,
+                    "total_tokens": 0,
+                }
+            }
+        )
+        choices = [
+            {
+                "index": 0,
+                "finish_reason": finish_reason,
+            }
+        ]
+
         if self.request.stream:
-            return {
-                "id": self.id,
-                "created": self.created,
-                "model": self.request.model,
-                "system_fingerprint": self.system_fingerprint,
-                "object": "chat.completion.chunk",
-                "choices": [
-                    {
-                        "index": 0,
-                        "finish_reason": finish_reason,
-                        "delta": {
-                            "content": generated_text,
-                            "role": "assistant",
-                        }
-                        if generated_text is not None
-                        else {},
-                    }
-                ],
+            choices[0]["delta"] = (
+                {
+                    "content": generated_text,
+                    "role": "assistant",
+                }
+                if generated_text is not None
+                else {}
+            )
+        else:
+            choices[0]["message"] = {
+                "content": generated_text or "",
+                "role": "assistant",
             }
 
         return {
@@ -77,23 +90,9 @@ class ChatService:
             "created": self.created,
             "model": self.request.model,
             "system_fingerprint": self.system_fingerprint,
-            "object": "chat.completion",
-            "choices": [
-                {
-                    "index": 0,
-                    "finish_reason": finish_reason,
-                    "message": {
-                        "content": generated_text or "",
-                        "role": "assistant",
-                    },
-                }
-            ],
-            "usage": {
-                "completion_tokens": 0,
-                "prompt_tokens": 0,
-                "total_tokens": 0,
-            },
-        }
+            "object": object,
+            "choices": choices,
+        } | usage
 
     def _make_sampler(self):
         return make_sampler(temp=self.request.temperature, top_p=self.request.top_p)
