@@ -1,8 +1,10 @@
 import { createInsertSchema, createSelectSchema, createUpdateSchema } from "drizzle-zod";
-import { agentsTable } from "../db.js";
+import { agentHistoriesTable, agentsTable } from "../db.js";
 import { omitTimestamp } from "./util.js";
 import { z } from "zod";
 import { modelId } from "./mlx.js";
+
+export const selectAgentHistorySchema = createSelectSchema(agentHistoriesTable)
 
 export const selectAgentSchema = createSelectSchema(agentsTable)
 export type Agent = z.infer<typeof selectAgentSchema>

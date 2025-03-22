@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm";
-import { agentsTable } from "../db.js";
+import { agentHistoriesTable, agentsTable } from "../db.js";
 import type { Agent, CreateAgent } from "../schemas/agent.js";
 import { db } from "./drizzle.js";
 import { HTTPException } from "hono/http-exception";
@@ -26,7 +26,6 @@ export const getAgentById = async (agentId: Agent["id"]) => {
 export const createAgent = async (value: CreateAgent) => {
   const [agent] = await db.insert(agentsTable).values(value).returning()
   return agent
-
 }
 
 export const extractFirstXMLElement = (input: string) => {
@@ -35,11 +34,18 @@ export const extractFirstXMLElement = (input: string) => {
   return match ? match[0] : "";
 }
 
-const taskEnd = () => {
+const agentTaskEnd = () => {
   console.log("taskEnd")
   return ""
 }
 
-export const task: Record<string, (...props: any) => string> = {
-  taskEnd
+export const agentTask: Record<string, (...props: any) => string> = {
+  taskEnd: agentTaskEnd
 } as const
+
+export const getAgentHistoriesById = async (agentId: Agent["id"]) => {
+  const agentHistories = await db.select().from(agentHistoriesTable).where(eq(
+    agentHistoriesTable.agentId, agentId
+  ))
+  return agentHistories
+}

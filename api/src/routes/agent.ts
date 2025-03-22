@@ -1,7 +1,7 @@
 import { stream } from "hono/streaming"
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
-import { createAgentSchema, requestParamsAgentSchema, runAgentSchema, selectAgentSchema } from "../schemas/agent.js";
-import { createAgent, extractFirstXMLElement, getAgentById, getAgents, task } from "../services/agent.js";
+import { createAgentSchema, requestParamsAgentSchema, runAgentSchema, selectAgentHistorySchema, selectAgentSchema } from "../schemas/agent.js";
+import { createAgent, extractFirstXMLElement, getAgentById, getAgents, agentTask, getAgentHistoriesById } from "../services/agent.js";
 import { postChatCompletions } from "../services/mlx.js";
 
 const tags = ["agent"]
@@ -164,11 +164,11 @@ export const agentRoute = new OpenAPIHono().openapi(
           }
 
           const toolName = extractedXML.match(/<([a-zA-Z_][\w-]*)\b[^>]*>/)?.[1]!
-          if (!(toolName in task)) {
+          if (!(toolName in agentTask)) {
             continue
           }
 
-          const toolResult = task[toolName]()
+          const toolResult = agentTask[toolName]()
           stream.writeln(`data: ${JSON.stringify({
             tool: {
               name: toolName,
@@ -183,4 +183,28 @@ export const agentRoute = new OpenAPIHono().openapi(
 
         stream.close()
       })
+    })
+  .openapi(
+    createRoute({
+      method: 'get',
+      path: '/{agentId}/histories',
+      tags,
+      request: {
+        params: requestParamsAgentSchema,
+      },
+      responses: {
+        200: {
+          description: 'get agent histories by id',
+          content: {
+            "application/json": {
+              schema: selectAgentHistorySchema.array()
+            }
+          }
+        }
+      }
+    }),
+    async c => {
+      const { agentId } = c.req.valid("param")
+      const agentHistories = await getAgentHistoriesById(agentId)
+      return c.json(agentHistories)
     })

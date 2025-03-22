@@ -28,3 +28,16 @@ export const agentsTable = pgTable("agents", {
   absolutePath: text("absolute_path").notNull(),
   ...timestamps,
 })
+
+export const agentHistoriesTable = pgTable("agent_histories", {
+  id: integer("id").generatedAlwaysAsIdentity().primaryKey(),
+  agentId: integer("agent_id").notNull().references(() => agentsTable.id),
+  message: text("message").notNull(),
+  ...timestamps,
+})
+
+export const agentHistoryMessagesTable = pgTable("agent_history_messages", {
+  id: integer("id").generatedAlwaysAsIdentity().primaryKey(),
+  agentHistoryId: integer("agent_history_id").notNull().references(() => agentHistoriesTable.id),
+  ...timestamps,
+})
