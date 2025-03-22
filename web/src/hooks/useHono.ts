@@ -1,6 +1,6 @@
-import { hc } from "hono/client"
-import type { AppType } from "../../../api/src"
+import { hc } from "hono/client";
+import type { AppType } from "../../../api/src";
 
 export const useHono = () => {
-  return hc<AppType>("http://localhost:10002")
-}
+  return hc<AppType>("http://localhost:10002");
+};

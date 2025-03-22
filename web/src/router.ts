@@ -8,7 +8,7 @@ export type Path =
   | `/prompts`
 
 export type Params = {
-
+  
 }
 
 export type ModalPath = never

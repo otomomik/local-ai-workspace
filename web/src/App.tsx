@@ -1,7 +1,7 @@
-import { Routes } from '@generouted/react-router'
+import { Routes } from "@generouted/react-router";
 
 function App() {
-  return <Routes />
+  return <Routes />;
 }
 
-export default App
+export default App;
