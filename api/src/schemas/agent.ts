@@ -6,6 +6,7 @@ import { z } from "zod";
 export const selectAgentSchema = createSelectSchema(agentsTable)
 export type Agent = z.infer<typeof selectAgentSchema>
 export const createAgentSchema = createInsertSchema(agentsTable).omit(omitTimestamp)
+export type CreateAgent = z.infer<typeof createAgentSchema>
 export const updateAgentSchema = createUpdateSchema(agentsTable).omit(omitTimestamp)
 export const requestParamsAgentSchema = z.object({
   agentId: z.string().refine(v => !Number.isNaN(Number(v)), {

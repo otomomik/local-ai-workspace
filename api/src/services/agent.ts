@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { agentsTable } from "../db.js";
-import type { Agent } from "../schemas/agent.js";
+import type { Agent, CreateAgent } from "../schemas/agent.js";
 import { db } from "./drizzle.js";
 import { HTTPException } from "hono/http-exception";
 
@@ -21,4 +21,10 @@ export const getAgentById = async (agentId: Agent["id"]) => {
   }
 
   return agents[0]
+}
+
+export const createAgent = async (value: CreateAgent) => {
+  const [agent] = await db.insert(agentsTable).values(value).returning()
+  return agent
+
 }
