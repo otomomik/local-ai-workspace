@@ -3,10 +3,13 @@ import { promptRequest, promptResponse } from "../schemas/mlx.js"
 import { stream } from "hono/streaming"
 import { postChatCompletions, postChatCompletionsWithSSE } from "../services/mlx.js"
 
+const tags = ["prompt"]
+
 export const promptRouter = new OpenAPIHono().openapi(
   createRoute({
     method: 'post',
     path: '/',
+    tags,
     request: {
       body: {
         content: {
@@ -38,6 +41,7 @@ export const promptRouter = new OpenAPIHono().openapi(
   createRoute({
     method: 'post',
     path: '/sse',
+    tags,
     request: {
       body: {
         content: {
@@ -52,7 +56,7 @@ export const promptRouter = new OpenAPIHono().openapi(
         description: 'post prompts sse',
         content: {
           'text/event-stream': {
-            schema: z.object({})
+            schema: z.string()
           }
         }
       }

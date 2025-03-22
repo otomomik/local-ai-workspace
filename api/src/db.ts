@@ -22,7 +22,7 @@ const timestampsWithDeletedAt = {
   }),
 };
 
-export const projectsTable = pgTable("projects", {
+export const agentsTable = pgTable("agents", {
   id: integer("id").generatedAlwaysAsIdentity().primaryKey(),
   name: text("name").notNull(),
   absolutePath: text("absolute_path").notNull(),
