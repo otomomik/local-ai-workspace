@@ -28,6 +28,7 @@ class ModelService:
                 if model is not None:
                     self.cache_models.append(model)
 
+            self.cache_models.sort(key=lambda x: x.created, reverse=True)
         return self.cache_models
 
     def _get_model(self, model_id: str):
