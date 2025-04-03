@@ -14,7 +14,10 @@ export const getModels = async (): Promise<Model[]> => {
 };
 
 export const postChatCompletions = async (request: ChatCompletionsRequest) => {
-  return client.chat.completions.create({ ...request, stream: false });
+  return client.chat.completions.create({
+    ...request,
+    stream: false,
+  });
 };
 
 export const postChatCompletionsWithSSE = async (

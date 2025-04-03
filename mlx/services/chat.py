@@ -101,15 +101,20 @@ class ChatService:
         prompt = tokenizer._tokenizer.apply_chat_template(
             self.request.messages, add_generation_prompt=True
         )
+
+        generated_text = ""
         sampler = self._make_sampler()
-        # streamを使用してtokenの計算を行う
-        generated_text = lm_utils.generate(
+        for generated_chunk in lm_utils.stream_generate(
             model,
             tokenizer,
             prompt=prompt,
             sampler=sampler,
             max_tokens=self.request.max_completion_tokens,
-        )
+        ):
+            # TODO finish_reason, usage_tokenの取得
+            print(generated_chunk)
+            generated_text += generated_chunk.text
+
         print(generated_text)
         return self._response(generated_text, "stop")
 
@@ -118,6 +123,7 @@ class ChatService:
         prompt = tokenizer._tokenizer.apply_chat_template(
             self.request.messages, add_generation_prompt=True
         )
+
         sampler = self._make_sampler()
         for generated_chunk in lm_utils.stream_generate(
             model,
@@ -136,16 +142,17 @@ class ChatService:
         model, tokenizer = vlm_utils.load(self.request.model)
         config = vlm_utils.load_config(self.request.model)
         images = []
+        print([message.dict() for message in self.request.messages])
         prompt = vlm_prompt_utils.apply_chat_template(
             tokenizer,
             config,
-            self.request.messages,
+            [message.dict() for message in self.request.messages],
             num_images=len(images),
             add_generation_prompt=True,
         )
 
-        # streamを使用してtokenの計算を行う
-        generated_text = vlm_utils.generate(
+        generated_text = ""
+        for generated_chunk in vlm_utils.stream_generate(
             model,
             tokenizer,
             prompt,
@@ -153,13 +160,19 @@ class ChatService:
             max_tokens=self.request.max_completion_tokens,
             temperature=self.request.temperature,
             top_p=self.request.top_p,
-        )
+        ):
+            # TODO finish_reason, usage_tokenの取得
+            print(generated_chunk)
+            generated_text += generated_chunk.text
+
+        print(generated_text)
         return self._response(generated_text, "stop")
 
     def _vision_generate_stream(self):
         model, tokenizer = vlm_utils.load(self.request.model)
         config = vlm_utils.load_config(self.request.model)
         images = []
+        print([message.dict() for message in self.request.messages])
         prompt = vlm_prompt_utils.apply_chat_template(
             tokenizer,
             config,

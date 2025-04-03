@@ -36,36 +36,46 @@ export const getAgentHistoriesById = async (agentId: Agent["id"]) => {
   return agentHistories;
 };
 
-export const extractFirstXMLElement = (input: string) => {
-  const regex = /<([a-zA-Z_][\w-]*)\b[^>]*>[\s\S]*?<\/\1>/;
-  const match = input.match(regex);
-  return match ? match[0] : "";
+export const extractContent = (
+  content: string,
+): {
+  think: string | null;
+  content: string | null;
+} => {
+  const closeThinkTag = "</think>";
+  let thinkContent = null;
+  const closeThinkIndex = content.indexOf(closeThinkTag);
+  const slicedContent = content.slice(
+    closeThinkIndex === -1 ? 0 : closeThinkIndex + closeThinkTag.length,
+  );
+  if (closeThinkIndex !== -1) {
+    thinkContent = content.slice(0, closeThinkIndex + closeThinkTag.length);
+  }
+  const brackets = ["{", "}"] as const;
+  const startIndex = slicedContent.indexOf(brackets[0]);
+  if (startIndex !== -1) {
+    let bracketCount = 0;
+    let endIndex = -1;
+    for (let i = startIndex; i < slicedContent.length; i++) {
+      if (slicedContent[i] === brackets[0]) {
+        bracketCount++;
+      } else if (slicedContent[i] === brackets[1]) {
+        bracketCount--;
+      }
+      if (bracketCount === 0) {
+        endIndex = i;
+        break;
+      }
+    }
+    if (endIndex !== -1) {
+      return {
+        think: thinkContent,
+        content: slicedContent.slice(startIndex, endIndex + 1),
+      };
+    }
+  }
+  return {
+    think: thinkContent,
+    content: null,
+  };
 };
-
-type Task = {
-  name: string;
-  description: string;
-  example?: string;
-  callback: (props?: Record<string, string>) => string | null; // props = {}
-};
-
-const agentTaskEnd: Task = {
-  name: "taskEnd",
-  description: `- ユーザーが入力した目的が完了した際に呼び出すタスク
-- 引数を受け取らない`,
-  example: `<taskEnd></taskEnd>`,
-  callback: () => null,
-};
-
-const agentDockerUp: Task = {
-  name: "dockerUp",
-  description: `- dockerのContainerを起動します。
-- すでに起動している場合はエラーになりません。
-- 引数を受け取らない`,
-  example: `<dockerUp></dockerUp>`,
-  callback: () => {
-    return "started";
-  },
-};
-
-export const agentTasks: Task[] = [agentDockerUp, agentTaskEnd];

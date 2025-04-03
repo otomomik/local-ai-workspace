@@ -29,3 +29,9 @@ export const runAgentSchema = z.object({
   model: modelId,
   message: z.string(),
 });
+
+const tool = z.object({
+  name: z.string(),
+  args: z.record(z.any()).optional().default({}),
+});
+export const toolResponseSchema = tool.array().or(tool.transform((v) => [v]));
